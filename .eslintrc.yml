@@ -1,18 +1,21 @@
 ---
 
 plugins:
+  - flowtype
   - jest
   - babel
 
 env:
   node: true
-  jest: true
+  jest/globals: true
+  browser: true
 
 parser: babel-eslint
 
 extends:
   - 'airbnb-base'
   - 'plugin:jest/recommended'
+  - 'plugin:flowtype/recommended'
 
 rules:
   no-console: 0
