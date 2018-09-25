@@ -3,16 +3,16 @@
 install: install-deps install-flow-typed
 
 develop:
-	npm run webpack-serve
+	npx webpack-serve
 
 install-deps:
 	npm install
 	
 start:
-	npm run babel-node -- src/bin/rss-reader.js
+	npx babel-node -- src/bin/rss-reader.js
 	
 install-flow-typed:
-	npm run flow-typed install
+	npx flow-typed install
 
 build:
 	rm -rf dist
@@ -22,10 +22,10 @@ test:
 	npm test
 
 check-types:
-	npm run flow
+	npx flow
 
 lint:
-	npm run eslint .
+	npx eslint .
 
 publish:
 	npm publish
