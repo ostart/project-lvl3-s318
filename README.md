@@ -14,3 +14,7 @@
 ## Install
 
 `npm install -g rss-reader-ostart-js`
+
+## Surge
+
+http://ostart-rss.surge.sh/
