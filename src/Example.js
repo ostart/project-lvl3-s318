@@ -8,6 +8,11 @@ export default class Example {
   }
 
   init() {
-
+    const button = this.element.getElementsByTagName('button')[0];
+    const form = this.element.getElementsByTagName('form')[0];
+    const func = () => form.submit();
+    if (button !== undefined) {
+      button.onclick = func;
+    }
   }
 }
