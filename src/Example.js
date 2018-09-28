@@ -1,9 +1,11 @@
 // @flow
 import isURL from 'validator/lib/isURL';
 import axios from './lib/axios';
+import parseToHTML from './lib/helper';
 
 export default class Example {
   element: HTMLElement;
+
   state: object;
 
   constructor(element: HTMLElement) {
@@ -17,14 +19,6 @@ export default class Example {
     const url = this.element.querySelector('input');
     const list = this.element.querySelector('ul.list-group');
     const status = this.element.querySelector('h1');
-
-    const parseToHTML = (stringSource) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(stringSource, "application/xml");
-      const titles = doc.querySelector('title');
-      alert(titles);
-      const descriptions = doc.querySelector('description');
-    };
 
     const addToFeedList = (title, description) => {
       const newUrl = document.createElement('li');
@@ -46,17 +40,18 @@ export default class Example {
       newRow.appendChild(newDescription);
     };
 
-    const addToArticles = () => {
+    const addToArticles = (articles) => {
 
     };
 
-    const feelAllFields = objData => {
-      addToFeedList();
-      addToArticles();
+    const feelAllFields = (objData) => {
+      const { title, description, articles } = objData;
+      addToFeedList(title, description);
+      addToArticles(articles);
     };
 
     const clearFields = () => {
-      url.value = "";
+      url.value = '';
       button.disabled = true;
       url.disabled = false;
       url.classList.remove('is-valid');
@@ -81,11 +76,11 @@ export default class Example {
           clearFields();
         });
     };
-    if (button !== undefined) {
+    if (button !== undefined || button !== null) {
       button.addEventListener('click', tryGetData);
     }
 
-    const validateUrl = e => {
+    const validateUrl = (e) => {
       const currUrl = e.currentTarget.value;
       if (isURL(currUrl) && !this.state.urlList.includes(currUrl)) {
         if (url.classList.contains('is-invalid')) {
@@ -101,7 +96,7 @@ export default class Example {
         button.disabled = true;
       }
     };
-    if (url !== undefined) {
+    if (url !== undefined || url !== null) {
       url.addEventListener('input', validateUrl);
     }
   }

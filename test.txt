@@ -1,0 +1,5 @@
+https://cors-anywhere.herokuapp.com/
+
+http://lorem-rss.herokuapp.com/feed
+
+http://localhost.localhost:5000/feed
