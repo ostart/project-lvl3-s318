@@ -1,7 +1,9 @@
 // @flow
+import axios from 'axios';
+import WatchJS from 'melanke-watchjs';
 import isURL from 'validator/lib/isURL';
-import axios from './lib/axios';
 import parseToHTML from './lib/helper';
+
 
 export default class Example {
   element: HTMLElement;
@@ -10,15 +12,35 @@ export default class Example {
 
   constructor(element: HTMLElement) {
     this.element = element;
-    this.state = { urlList: [] };
+    this.state = { urlList: [], articles: [] };
   }
 
   init() {
     const button = this.element.querySelector('button');
-    const form = this.element.querySelector('form');
+    const card = this.element.querySelector('div.card');
     const url = this.element.querySelector('input');
     const list = this.element.querySelector('ul.list-group');
     const status = this.element.querySelector('h1');
+
+    const showArticlesInCard = () => {
+      card.classList.add('mt-5');
+      card.classList.add('pt-3');
+
+      this.state.articles.forEach((element) => {
+        const { ti, li } = element;
+        const newLink = document.createElement('div');
+        newLink.classList.add('alert');
+        newLink.classList.add('alert-success');
+        card.appendChild(newLink);
+
+        const a = document.createElement('a');
+        a.setAttribute('href', li);
+        a.innerText = ti;
+        newLink.appendChild(a);
+      });
+    };
+
+    WatchJS.watch(this.state, 'articles', showArticlesInCard);
 
     const addToFeedList = (title, description) => {
       const newUrl = document.createElement('li');
@@ -31,23 +53,23 @@ export default class Example {
 
       const newTitle = document.createElement('div');
       newTitle.classList.add('col-4');
-      newTitle.innerHTML = title;
+      newTitle.innerText = title;
       newRow.appendChild(newTitle);
 
       const newDescription = document.createElement('div');
       newDescription.classList.add('col-8');
-      newDescription.innerHTML = description;
+      newDescription.innerText = description;
       newRow.appendChild(newDescription);
     };
 
-    const addToArticles = (articles) => {
-
+    const addToArticlesToState = (articles) => {
+      this.state.articles = [...this.state.articles, ...articles];
     };
 
     const feelAllFields = (objData) => {
       const { title, description, articles } = objData;
       addToFeedList(title, description);
-      addToArticles(articles);
+      addToArticlesToState(articles);
     };
 
     const clearFields = () => {
@@ -76,8 +98,8 @@ export default class Example {
           clearFields();
         });
     };
-    if (button !== undefined || button !== null) {
-      button.addEventListener('click', tryGetData);
+    if (button !== undefined && button !== null) {
+      button.addEventListener('click', tryGetData.bind(this));
     }
 
     const validateUrl = (e) => {
@@ -96,7 +118,7 @@ export default class Example {
         button.disabled = true;
       }
     };
-    if (url !== undefined || url !== null) {
+    if (url !== undefined && url !== null) {
       url.addEventListener('input', validateUrl);
     }
   }

@@ -1,5 +1,7 @@
-https://cors-anywhere.herokuapp.com/
+https://cors-anywhere.herokuapp.com/http://lorem-rss.herokuapp.com/feed
 
 http://lorem-rss.herokuapp.com/feed
 
 http://localhost.localhost:5000/feed
+
+https://cors-anywhere.herokuapp.com/http://lorem-rss.herokuapp.com/feed?unit=second&interval=30

@@ -2,14 +2,14 @@
 
 const parseToHTML = (stringSource) => {
   const parser = new DOMParser();
-  const doc = parser.parseFromString(stringSource, 'application/rss+xml');
+  const doc = parser.parseFromString(stringSource, 'application/xml');
   const channel = doc.getElementsByTagName('channel')[0];
-  const childs = channel.childNodes;
+  const childs = [...channel.childNodes];
   const items = childs.filter(e => e.nodeName === 'item');
   const title = childs.filter(e => e.nodeName === 'title')[0].innerHTML;
   const description = childs.filter(e => e.nodeName === 'description')[0].innerHTML;
   const articles = items.reduce((acc, cur) => {
-    const nodes = cur.childNodes;
+    const nodes = [...cur.childNodes];
     const ti = nodes.filter(e => e.nodeName === 'title')[0].innerHTML;
     const li = nodes.filter(e => e.nodeName === 'link')[0].innerHTML;
     return [...acc, { ti, li }];
