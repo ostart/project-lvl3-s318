@@ -1,9 +1,9 @@
 import axios from 'axios';
 import WatchJS from 'melanke-watchjs';
 import isURL from 'validator/lib/isURL';
-import parseToHTML from './lib/helper';
+import parseToRssObject from './lib/helper';
 import {
-  showArticlesInCard, addToFeedList, changeStatus, renderForm, clearForm,
+  showArticlesInCard, addToFeedList, changeStatus, renderForm, prepareForm,
 } from './render';
 
 export default () => {
@@ -26,26 +26,22 @@ export default () => {
   WatchJS.watch(state, 'rssFeeds', () => addToFeedList(state.rssFeeds));
   WatchJS.watch(state, 'status', () => changeStatus(state.status));
   WatchJS.watch(state, 'registrationProcess', () => renderForm(state.registrationProcess));
+  WatchJS.watch(state, 'currUrl', () => prepareForm(state.currUrl));
 
-  const feelAllFields = (objData) => {
+  const fillAllFields = (objData) => {
     const { title, description, articles } = objData;
-    const tempFeed = [...state.rssFeeds, { title, description }];
-    console.log(tempFeed.length);
-    state.rssFeeds = tempFeed;
-    const tempArt = [...state.articles, ...articles];
-    state.articles = tempArt;
-    console.log(tempArt.length);
+    state.rssFeeds = [...state.rssFeeds, { title, description }];
+    state.articles = [...state.articles, ...articles];
   };
 
   const reNewState = () => {
     state.urlList = [...state.urlList, state.currUrl];
     state.status = `RSS feed ${state.currUrl} has been added successfuly!`;
-    clearForm();
+    state.currUrl = '';
   };
 
   const showError = (err) => {
     state.status = err.message;
-    clearForm();
   };
 
   const tryGetData = () => {
@@ -54,25 +50,25 @@ export default () => {
     state.status = `Try to get data from ${currUrl} ...`;
     state.registrationProcess.submitDisabled = true;
     axios.get(currUrl)
-      .then(response => parseToHTML(response.data))
-      .then(objAfterParse => feelAllFields(objAfterParse))
+      .then(response => parseToRssObject(response.data))
+      .then(objAfterParse => fillAllFields(objAfterParse))
       .then(() => reNewState())
       .catch(err => showError(err));
   };
-  if (button !== undefined && button !== null) {
-    button.addEventListener('click', tryGetData);
-  }
 
-  if (url !== undefined && url !== null) {
-    url.addEventListener('input', () => {
-      const currUrl = url.value;
-      if (currUrl === '' || (isURL(currUrl) && !state.urlList.includes(currUrl))) {
-        state.registrationProcess.valid = true;
-        state.registrationProcess.submitDisabled = false;
-      } else {
-        state.registrationProcess.valid = false;
-        state.registrationProcess.submitDisabled = true;
-      }
-    });
-  }
+  button.addEventListener('click', tryGetData);
+
+  url.addEventListener('input', (e) => {
+    const currUrl = e.currentTarget.value;
+    if (currUrl === '') {
+      state.registrationProcess.valid = true;
+      state.registrationProcess.submitDisabled = true;
+    } else if (isURL(currUrl) && !state.urlList.includes(currUrl)) {
+      state.registrationProcess.valid = true;
+      state.registrationProcess.submitDisabled = false;
+    } else {
+      state.registrationProcess.valid = false;
+      state.registrationProcess.submitDisabled = true;
+    }
+  });
 };

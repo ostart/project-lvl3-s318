@@ -1,10 +1,5 @@
-const button = document.querySelector('button');
-const card = document.querySelector('div.card');
-const url = document.querySelector('input');
-const list = document.querySelector('ul.list-group');
-const status = document.querySelector('h1');
-
 export const showArticlesInCard = (articles) => {
+  const card = document.querySelector('div.card');
   card.innerHTML = '';
   card.classList.add('mt-5');
   card.classList.add('pt-3');
@@ -24,6 +19,8 @@ export const showArticlesInCard = (articles) => {
 };
 
 const addOneFeed = (title, description) => {
+  const list = document.querySelector('ul.list-group');
+
   const newUrl = document.createElement('li');
   newUrl.classList.add('list-group-item');
   list.appendChild(newUrl);
@@ -44,11 +41,14 @@ const addOneFeed = (title, description) => {
 };
 
 export const addToFeedList = (rssFeeds) => {
+  const list = document.querySelector('ul.list-group');
   list.innerHTML = '';
   rssFeeds.map(elem => addOneFeed(elem.title, elem.description));
 };
 
 export const renderForm = (registrationProcess) => {
+  const url = document.querySelector('input');
+  const button = document.querySelector('button');
   const { valid, submitDisabled } = registrationProcess;
 
   if (valid) {
@@ -60,11 +60,17 @@ export const renderForm = (registrationProcess) => {
   button.disabled = submitDisabled;
 };
 
-export const clearForm = () => {
-  url.value = '';
-  button.disabled = true;
+export const prepareForm = (message = '') => {
+  const url = document.querySelector('input');
+  const button = document.querySelector('button');
+
+  url.value = message;
+  if (message === '') {
+    button.disabled = true;
+  }
 };
 
 export const changeStatus = (message) => {
+  const status = document.querySelector('h1');
   status.innerText = message;
 };

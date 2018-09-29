@@ -1,23 +1,19 @@
-// import DOMParser from 'dom-parser';
-
-const parseToHTML = (stringSource) => {
+const parseToRssObject = (stringSource) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(stringSource, 'application/xml');
-  const channel = doc.getElementsByTagName('channel')[0];
-  const childs = [...channel.childNodes];
-  const items = childs.filter(e => e.nodeName === 'item');
-  const title = childs.filter(e => e.nodeName === 'title')[0].innerHTML;
-  const description = childs.filter(e => e.nodeName === 'description')[0].innerHTML;
+  const channel = doc.querySelector('channel');
+  const title = channel.querySelector('title').innerHTML;
+  const description = channel.querySelector('description').innerHTML;
+  const items = [...channel.querySelectorAll('item')];
   const articles = items.reduce((acc, cur) => {
-    const nodes = [...cur.childNodes];
-    const ti = nodes.filter(e => e.nodeName === 'title')[0].innerHTML;
-    const li = nodes.filter(e => e.nodeName === 'link')[0].innerHTML;
+    const ti = cur.querySelector('title').innerHTML;
+    const li = cur.querySelector('link').innerHTML;
     return [...acc, { ti, li }];
   }, []);
   return { title, description, articles };
 };
 
-export default parseToHTML;
+export default parseToRssObject;
 
 // const text = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Lorem ipsum feed for an interval of 1 minutes]]></title><description><![CDATA[This is a constantly updating lorem ipsum feed]]></description><link>http://example.com/</link><generator>RSS for Node</generator><lastBuildDate>Fri, 28 Sep 2018 02:29:20 GMT</lastBuildDate><author><![CDATA[John Smith]]></author><pubDate>Fri, 28 Sep 2018 02:29:00 GMT</pubDate><copyright><![CDATA[Michael Bertolacci, licensed under a Creative Commons Attribution 3.0 Unported License.]]></copyright><ttl>60</ttl><item><title><![CDATA[Lorem ipsum 2018-09-28T02:29:00+00:00]]></title><description><![CDATA[Dolor fugiat in minim ullamco ipsum tempor exercitation velit exercitation proident officia.]]></description><link>http://example.com/test/1538101740</link><guid isPermaLink="true">http://example.com/test/1538101740</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:29:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:28:00+00:00]]></title><description><![CDATA[Dolore incididunt consectetur ex anim in enim Lorem.]]></description><link>http://example.com/test/1538101680</link><guid isPermaLink="true">http://example.com/test/1538101680</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:28:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:27:00+00:00]]></title><description><![CDATA[Est amet sit quis incididunt culpa exercitation.]]></description><link>http://example.com/test/1538101620</link><guid isPermaLink="true">http://example.com/test/1538101620</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:27:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:26:00+00:00]]></title><description><![CDATA[Lorem commodo aliquip reprehenderit mollit sint sint id amet velit cillum.]]></description><link>http://example.com/test/1538101560</link><guid isPermaLink="true">http://example.com/test/1538101560</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:26:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:25:00+00:00]]></title><description><![CDATA[Magna do ex eiusmod do qui.]]></description><link>http://example.com/test/1538101500</link><guid isPermaLink="true">http://example.com/test/1538101500</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:25:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:24:00+00:00]]></title><description><![CDATA[Ea eu reprehenderit ad labore excepteur mollit tempor sit esse.]]></description><link>http://example.com/test/1538101440</link><guid isPermaLink="true">http://example.com/test/1538101440</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:24:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:23:00+00:00]]></title><description><![CDATA[Esse nisi commodo enim fugiat in tempor.]]></description><link>http://example.com/test/1538101380</link><guid isPermaLink="true">http://example.com/test/1538101380</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:23:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:22:00+00:00]]></title><description><![CDATA[Do et aliqua enim nulla ea elit amet do irure fugiat dolor Lorem cillum incididunt.]]></description><link>http://example.com/test/1538101320</link><guid isPermaLink="true">http://example.com/test/1538101320</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:22:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:21:00+00:00]]></title><description><![CDATA[Laboris consequat ea officia do aliqua cupidatat in in aute.]]></description><link>http://example.com/test/1538101260</link><guid isPermaLink="true">http://example.com/test/1538101260</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:21:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2018-09-28T02:20:00+00:00]]></title><description><![CDATA[Ullamco ut fugiat cupidatat magna exercitation minim enim anim veniam cillum fugiat.]]></description><link>http://example.com/test/1538101200</link><guid isPermaLink="true">http://example.com/test/1538101200</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 28 Sep 2018 02:20:00 GMT</pubDate></item></channel></rss>';
 // console.log(parseToHTML(text));
