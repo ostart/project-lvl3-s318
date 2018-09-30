@@ -2,8 +2,9 @@ import axios from 'axios';
 import WatchJS from 'melanke-watchjs';
 import isURL from 'validator/lib/isURL';
 import parseToRssObject from './lib/helper';
+import errorMessage from './lib/errorMessage';
 import {
-  showArticlesInCard, addToFeedList, changeStatus, renderForm, prepareForm,
+  showArticlesInCard, addToFeedList, changeStatus, renderForm, prepareForm, showErrorMessage,
 } from './render';
 
 export default () => {
@@ -17,6 +18,7 @@ export default () => {
     urlList: [],
     rssFeeds: [],
     articles: [],
+    errorMessage: '',
   };
 
   const button = document.querySelector('button');
@@ -27,6 +29,7 @@ export default () => {
   WatchJS.watch(state, 'status', () => changeStatus(state.status));
   WatchJS.watch(state, 'registrationProcess', () => renderForm(state.registrationProcess));
   WatchJS.watch(state, 'currUrl', () => prepareForm(state.currUrl));
+  WatchJS.watch(state, 'errorMessage', () => showErrorMessage(state.errorMessage));
 
   const fillAllFields = (objData) => {
     const { title, description, articles } = objData;
@@ -41,7 +44,8 @@ export default () => {
   };
 
   const showError = (err) => {
-    state.status = err.message;
+    state.errorMessage = '';
+    state.errorMessage = errorMessage(err);
   };
 
   const tryGetData = () => {

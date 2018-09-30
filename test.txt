@@ -5,3 +5,5 @@ http://lorem-rss.herokuapp.com/feed
 http://localhost.localhost:5000/feed
 
 https://cors-anywhere.herokuapp.com/http://lorem-rss.herokuapp.com/feed?unit=second&interval=30
+
+https://ru.hexlet.io/lessons.rss

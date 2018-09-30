@@ -8,7 +8,7 @@ export const showArticlesInCard = (articles) => {
     const { ti, li } = element;
     const newLink = document.createElement('div');
     newLink.classList.add('alert');
-    newLink.classList.add('alert-success');
+    newLink.classList.add('alert-light');
     card.appendChild(newLink);
 
     const a = document.createElement('a');
@@ -71,6 +71,19 @@ export const prepareForm = (message = '') => {
 };
 
 export const changeStatus = (message) => {
-  const status = document.querySelector('h1');
+  const status = document.querySelector('div.alert[role="alert"]');
+  if (status.classList.contains('alert-danger')) {
+    status.classList.remove('alert-danger');
+  }
+  status.classList.add('alert-success');
   status.innerText = message;
+};
+
+export const showErrorMessage = (errorMessage) => {
+  const status = document.querySelector('div.alert[role="alert"]');
+  if (status.classList.contains('alert-success')) {
+    status.classList.remove('alert-success');
+  }
+  status.classList.add('alert-danger');
+  status.innerText = errorMessage;
 };
