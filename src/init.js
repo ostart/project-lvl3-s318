@@ -21,7 +21,7 @@ export default () => {
     errorMessage: '',
   };
 
-  const button = document.querySelector('button');
+  const sendRequestBtn = document.querySelector('#sendRequest');
   const url = document.querySelector('input');
 
   WatchJS.watch(state, 'articles', () => showArticlesInCard(state.articles));
@@ -60,7 +60,7 @@ export default () => {
       .catch(err => showError(err));
   };
 
-  button.addEventListener('click', tryGetData);
+  sendRequestBtn.addEventListener('click', tryGetData);
 
   url.addEventListener('input', (e) => {
     const currUrl = e.currentTarget.value;

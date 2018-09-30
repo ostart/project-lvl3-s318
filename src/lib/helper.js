@@ -8,7 +8,8 @@ const parseToRssObject = (stringSource) => {
   const articles = items.reduce((acc, cur) => {
     const ti = cur.querySelector('title').innerHTML;
     const li = cur.querySelector('link').innerHTML;
-    return [...acc, { ti, li }];
+    const de = cur.querySelector('description').innerHTML;
+    return [...acc, { ti, li, de }];
   }, []);
   return { title, description, articles };
 };
