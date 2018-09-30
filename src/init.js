@@ -2,7 +2,6 @@ import axios from 'axios';
 import WatchJS from 'melanke-watchjs';
 import isURL from 'validator/lib/isURL';
 import parseToRssObject from './lib/helper';
-import errorMessage from './lib/errorMessage';
 import {
   showArticlesInCard, addToFeedList, changeStatus, renderForm, prepareForm, showErrorMessage,
 } from './render';
@@ -45,7 +44,8 @@ export default () => {
 
   const showError = (err) => {
     state.errorMessage = '';
-    state.errorMessage = errorMessage(err);
+    state.errorMessage = 'Failed to load. Make sure the rss exists and works.';
+    console.log(err.message);
   };
 
   const tryGetData = () => {
@@ -75,4 +75,22 @@ export default () => {
       state.registrationProcess.submitDisabled = true;
     }
   });
+
+  const timeoutFunc = () => {
+    if (state.urlList.length > 0) {
+      state.urlList.map(currUrl => axios.get(currUrl)
+        .then(response => parseToRssObject(response.data))
+        .then((objAfterParse) => {
+          const { articles } = objAfterParse;
+          const newArticleTitles = articles.map(elem => elem.ti);
+          const oldArticleTitles = new Set(state.articles.map(elem => elem.ti));
+          const diffTi = newArticleTitles.filter(elem => !oldArticleTitles.has(elem));
+          const diffArticles = articles.filter(elem => diffTi.includes(elem.ti));
+          state.articles = [...state.articles, ...diffArticles];
+        })
+        .catch(err => showError(err)));
+    }
+    setTimeout(timeoutFunc, 5000);
+  };
+  setTimeout(timeoutFunc, 5000);
 };

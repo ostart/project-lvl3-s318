@@ -9,54 +9,20 @@ const createModal = (content, id) => {
   modal.setAttribute('aria-labelledby', 'exampleModalLabel');
   modal.setAttribute('aria-hidden', 'true');
   body.appendChild(modal);
-
-  const modalDialog = document.createElement('div');
-  modalDialog.classList.add('modal-dialog');
-  modalDialog.setAttribute('role', 'document');
-  modal.appendChild(modalDialog);
-
-  const modalContent = document.createElement('div');
-  modalContent.classList.add('modal-content');
-  modalDialog.appendChild(modalContent);
-
-  const modalHeader = document.createElement('div');
-  modalHeader.classList.add('modal-header');
-  modalContent.appendChild(modalHeader);
-
-  const modalBody = document.createElement('div');
-  modalBody.classList.add('modal-body');
-  modalBody.innerHTML = content;
-  modalContent.appendChild(modalBody);
-
-  const modalFooter = document.createElement('div');
-  modalFooter.classList.add('modal-footer');
-  modalContent.appendChild(modalFooter);
-
-  const h5 = document.createElement('h5');
-  h5.classList.add('modal-title');
-  h5.setAttribute('id', 'exampleModalLabel');
-  h5.innerText = 'Description';
-  modalHeader.appendChild(h5);
-
-  const btnHeader = document.createElement('button');
-  btnHeader.classList.add('close');
-  btnHeader.setAttribute('type', 'button');
-  btnHeader.setAttribute('data-dismiss', 'modal');
-  btnHeader.setAttribute('aria-label', 'Close');
-  modalHeader.appendChild(btnHeader);
-
-  const spanHeader = document.createElement('span');
-  spanHeader.setAttribute('aria-hidden', 'true');
-  spanHeader.innerHTML = '&times;';
-  btnHeader.appendChild(spanHeader);
-
-  const btnFooter = document.createElement('button');
-  btnFooter.classList.add('btn');
-  btnFooter.classList.add('btn-secondary');
-  btnFooter.setAttribute('type', 'button');
-  btnFooter.setAttribute('data-dismiss', 'modal');
-  btnFooter.innerText = 'Close';
-  modalFooter.appendChild(btnFooter);
+  modal.innerHTML = `<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Description</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">${content}</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>`;
 };
 
 export const showArticlesInCard = (articles) => {
@@ -153,18 +119,14 @@ export const prepareForm = (message = '') => {
 
 export const changeStatus = (message) => {
   const status = document.querySelector('div.alert[role="alert"]');
-  if (status.classList.contains('alert-danger')) {
-    status.classList.remove('alert-danger');
-  }
+  status.classList.remove('alert-danger');
   status.classList.add('alert-success');
   status.innerText = message;
 };
 
 export const showErrorMessage = (errorMessage) => {
   const status = document.querySelector('div.alert[role="alert"]');
-  if (status.classList.contains('alert-success')) {
-    status.classList.remove('alert-success');
-  }
+  status.classList.remove('alert-success');
   status.classList.add('alert-danger');
   status.innerText = errorMessage;
 };
