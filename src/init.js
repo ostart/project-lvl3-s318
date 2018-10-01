@@ -45,7 +45,7 @@ export default () => {
   const showError = (err) => {
     state.errorMessage = '';
     state.errorMessage = 'Failed to load. Make sure the rss exists and works.';
-    console.log(err.message);
+    console.log(`An error has occurred.\n Name: ${err.name}.\n Message: ${err.message}\n Stack: ${err.stack}`);
   };
 
   const tryGetData = () => {
@@ -77,20 +77,23 @@ export default () => {
   });
 
   const timeoutFunc = () => {
-    if (state.urlList.length > 0) {
-      state.urlList.map(currUrl => axios.get(currUrl)
-        .then(response => parseToRssObject(response.data))
-        .then((objAfterParse) => {
-          const { articles } = objAfterParse;
-          const newArticleTitles = articles.map(elem => elem.ti);
-          const oldArticleTitles = new Set(state.articles.map(elem => elem.ti));
-          const diffTi = newArticleTitles.filter(elem => !oldArticleTitles.has(elem));
-          const diffArticles = articles.filter(elem => diffTi.includes(elem.ti));
-          state.articles = [...state.articles, ...diffArticles];
-        })
-        .catch(err => showError(err)));
+    try {
+      if (state.urlList.length > 0) {
+        state.urlList.map(currUrl => axios.get(currUrl)
+          .then(response => parseToRssObject(response.data))
+          .then((objAfterParse) => {
+            const { articles } = objAfterParse;
+            const newArticleTitles = articles.map(elem => elem.ti);
+            const oldArticleTitles = new Set(state.articles.map(elem => elem.ti));
+            const diffTi = newArticleTitles.filter(elem => !oldArticleTitles.has(elem));
+            const diffArticles = articles.filter(elem => diffTi.includes(elem.ti));
+            state.articles = [...state.articles, ...diffArticles];
+          })
+          .catch(err => showError(err)));
+      }
+    } finally {
+      setTimeout(timeoutFunc, 5000);
     }
-    setTimeout(timeoutFunc, 5000);
   };
   setTimeout(timeoutFunc, 5000);
 };

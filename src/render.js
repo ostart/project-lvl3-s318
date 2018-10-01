@@ -27,7 +27,7 @@ const createModal = (content, id) => {
 
 export const showArticlesInCard = (articles) => {
   const body = document.querySelector('body');
-  const modals = [...body.querySelectorAll('div.modal')];
+  const modals = [...body.querySelectorAll('div.modal:not(.show)')];
   modals.map(elem => body.removeChild(elem));
 
   const card = document.querySelector('div.card');
