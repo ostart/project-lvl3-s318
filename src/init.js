@@ -1,6 +1,7 @@
 import axios from 'axios';
 import WatchJS from 'melanke-watchjs';
 import isURL from 'validator/lib/isURL';
+import _ from 'lodash';
 import parseToRssObject from './lib/helper';
 import {
   showArticlesInCard, addToFeedList, changeStatus, renderForm, prepareForm, showErrorMessage,
@@ -45,7 +46,7 @@ export default () => {
   const showError = (err) => {
     state.errorMessage = '';
     state.errorMessage = 'Failed to load. Make sure the rss exists and works.';
-    console.log(`An error has occurred.\n Name: ${err.name}.\n Message: ${err.message}\n Stack: ${err.stack}`);
+    console.log(`An error has occurred.\n Name: ${err.name}\n Message: ${err.message}\n Stack: ${err.stack}`);
   };
 
   const tryGetData = () => {
@@ -77,23 +78,15 @@ export default () => {
   });
 
   const timeoutFunc = () => {
-    try {
-      if (state.urlList.length > 0) {
-        state.urlList.map(currUrl => axios.get(currUrl)
-          .then(response => parseToRssObject(response.data))
-          .then((objAfterParse) => {
-            const { articles } = objAfterParse;
-            const newArticleTitles = articles.map(elem => elem.ti);
-            const oldArticleTitles = new Set(state.articles.map(elem => elem.ti));
-            const diffTi = newArticleTitles.filter(elem => !oldArticleTitles.has(elem));
-            const diffArticles = articles.filter(elem => diffTi.includes(elem.ti));
-            state.articles = [...state.articles, ...diffArticles];
-          })
-          .catch(err => showError(err)));
-      }
-    } finally {
-      setTimeout(timeoutFunc, 5000);
-    }
+    const promises = state.urlList.map(currUrl => axios.get(currUrl)
+      .then(response => parseToRssObject(response.data))
+      .then((objAfterParse) => {
+        const { articles } = objAfterParse;
+        const diffArticles = _.differenceBy(articles, state.articles, 'ti');
+        state.articles = [...state.articles, ...diffArticles];
+      })
+      .catch(err => showError(err)));
+    Promise.all(promises).finally(() => setTimeout(timeoutFunc, 5000));
   };
   setTimeout(timeoutFunc, 5000);
 };
